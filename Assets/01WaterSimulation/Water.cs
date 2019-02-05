@@ -10,11 +10,12 @@ public class Water : MonoBehaviour {
 	public Material WaterMat;
 
 	int numWaves = 0;
-	Vector4[] waveData = new Vector4[20];
-	Vector4[] waveDirections = new Vector4[20];
+	List<Vector4> waveData = new List<Vector4>();
+	List<Vector4> waveDirections = new List<Vector4>();
 
 	void Start () {
-		CreateWave();
+		for (int i = 0; i < 4; i ++)
+			SpawnWave();
 	}
 	
 	void Update () {
@@ -23,16 +24,17 @@ public class Water : MonoBehaviour {
 		WaterMat.SetVectorArray("_WaveDirections", waveDirections);
 	}
 
-	void CreateWave()
+	void SpawnWave()
 	{
-		float wavelenght = Random.Range(MedWavelenght/2f, MedWavelenght * 2f);
-		float amplitude = MedAmplitude * wavelenght / MedWavelenght;
+		float randomFactor = Random.Range(0.5f, 2f);
+		float wavelenght = randomFactor * MedWavelenght;
+		float amplitude = randomFactor * MedAmplitude;
 		float frequency = 2 * Mathf.PI / wavelenght;
 		float speed = Mathf.Sqrt(9.8f * wavelenght / (2f * Mathf.PI));
 		float phi = speed * frequency;
 		
-		waveData[numWaves] = new Vector4(amplitude, frequency, phi, 1);
-		waveDirections[numWaves] = new Vector4(1, 1, 0, 0);
+		waveData.Add(new Vector4(amplitude, frequency, phi, 1));
+		waveDirections.Add(new Vector4(1, 1, 0, 0));
 		numWaves++;
 	}
 }
