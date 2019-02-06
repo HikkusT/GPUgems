@@ -281,8 +281,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccd969ba1897153499b4ce8d3e1489d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MedWavelenght: 1
-  MedAmplitude: 0.3
+  MedWavelenght: 10
+  MedAmplitude: 0.5
+  Decay: 0.02
   WaterMat: {fileID: 2100000, guid: df006ef155eb243448eea39199864e5e, type: 2}
 --- !u!23 &1091536629
 MeshRenderer:

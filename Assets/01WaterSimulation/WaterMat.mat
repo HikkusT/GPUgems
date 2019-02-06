@@ -7,7 +7,7 @@ Material:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_Name: WaterMat
-  m_Shader: {fileID: 4800000, guid: 8cc997d0d8432824aaf045cb7446ea8a, type: 3}
+  m_Shader: {fileID: 4800000, guid: 4cd7ba37a52040e43a3811b7d616df67, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
