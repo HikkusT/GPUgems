@@ -7,14 +7,17 @@ public class Water : MonoBehaviour {
 	public float MedWavelenght;
 	public float MedAmplitude;
 	public float Decay;
+	public float WindCone;
 
 	public Material WaterMat;
 
 	int numWaves = 0;
 	List<Vector4> waveData = new List<Vector4>();
 	List<Vector4> waveDirections = new List<Vector4>();
+	Vector2 windDir;
 
 	void Start () {
+		windDir = Random.insideUnitCircle;
 		for (int i = 0; i < 4; i ++)
 			SpawnWave();
 	}
@@ -40,6 +43,14 @@ public class Water : MonoBehaviour {
 		}
 	}
 
+	Vector2 GetRandomWaveDir()
+	{
+		float angle  = Mathf.Deg2Rad * Random.Range(- WindCone, WindCone);
+		float x = windDir.x * Mathf.Cos(angle) - windDir.y * Mathf.Sin(angle);
+		float y = windDir.x * Mathf.Sin(angle) + windDir.y * Mathf.Cos(angle);
+		return new Vector2(x, y);
+	}
+
 	void SpawnWave()
 	{
 		float randomFactor = Random.Range(0.5f, 2f);
@@ -50,7 +61,8 @@ public class Water : MonoBehaviour {
 		float phi = speed * frequency;
 		
 		waveData.Add(new Vector4(amplitude, frequency, speed, 1));
-		waveDirections.Add(new Vector4(1, 0, 0, 1));
+		Vector2 waveDir = GetRandomWaveDir();
+		waveDirections.Add(new Vector4(waveDir.x, waveDir.y, 0, 1));
 		numWaves++;
 	}
 
