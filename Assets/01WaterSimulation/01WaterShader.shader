@@ -16,6 +16,8 @@
 		// Use shader model 3.0 target, to get nicer looking lighting
 		#pragma target 3.0
 
+		#define GERSTNER
+
 		sampler2D _MainTex;
 
 		struct Input {
@@ -36,6 +38,7 @@
 		int _NumWaves;
 		float4 _WaveData[20];
 		float4 _WaveDirections[20];
+		float _WaveIntensity[20];
 
 		float2 GetDirection (appdata_full v, int i)
 		{
@@ -65,9 +68,23 @@
 			float A = _WaveData[i].x;
 			float w = _WaveData[i].y;
 			float phi = _WaveData[i].z;
-			float I = _WaveData[i].w;
+			float I = _WaveIntensity[i];
 
-			return I * A * sin(DirectionDotProduct(v, i) * w + phi * _Time);
+			return I * A * sin(DirectionDotProduct(v, i) * w + phi * _Time.y);
+		}
+
+		float2 CalculateGerstner(appdata_full v, int i)
+		{
+			float A = _WaveData[i].x;
+			float w = _WaveData[i].y;
+			float phi = _WaveData[i].z;
+			float q = _WaveData[i].w;
+			float I = _WaveIntensity[i];
+			float2 dir = GetDirection(v, i);
+			float x = q * I * A * dir.x * cos(DirectionDotProduct(v, i) * w + phi * _Time.y);
+			float z = q * I * A * dir.y * cos(DirectionDotProduct(v, i) * w + phi * _Time.y);
+
+			return float2(x, z);
 		}
 
 		float3 CalculateNormal (appdata_full v, int i)
@@ -75,18 +92,32 @@
 			float A = _WaveData[i].x;
 			float w = _WaveData[i].y;
 			float phi = _WaveData[i].z;
-			float I = _WaveData[i].w;
+			float q = _WaveData[i].w;
+			float I = _WaveIntensity[i];
 			float2 dir = GetDirection(v, i);
-			float x = dir.x * w * I * A * cos(DirectionDotProduct(v, i) * w + phi * _Time);
-			float z = dir.y * w * I * A * cos(DirectionDotProduct(v, i) * w + phi * _Time);
+			#ifdef GERSTNER
+				float x = dir.x * w * I * A * cos(DirectionDotProduct(v, i) * w + phi * _Time.y);
+				float z = dir.y * w * I * A * cos(DirectionDotProduct(v, i) * w + phi * _Time.y);
+				float y = 1 - q * w * I * A * sin(DirectionDotProduct(v, i) * w + phi * _Time.y);
 
-			return normalize(float3(-x, 1, -z));
+				return normalize(float3(x, y, z));
+			#else
+				float x = dir.x * w * I * A * cos(DirectionDotProduct(v, i) * w + phi * _Time.y);
+				float z = dir.y * w * I * A * cos(DirectionDotProduct(v, i) * w + phi * _Time.y);
+
+				return normalize(float3(-x, 1, -z));
+			#endif
 		}
 
 		void vert (inout appdata_full v)
 		{
 			for (int i = 0; i < _NumWaves; i ++)
+			{
 				v.vertex.y += CalculateWaveHeight(v, i);
+				#ifdef GERSTNER
+					v.vertex.xz += CalculateGerstner(v, i);
+				#endif
+			}
 
 			if(_NumWaves == 0)
 				v.normal = float3(0, 1., 0);

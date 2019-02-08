@@ -266,7 +266,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &535853650
 Light:
   m_ObjectHideFlags: 0
@@ -349,6 +349,7 @@ MonoBehaviour:
   MedWavelenght: 5
   MedAmplitude: 0.2
   Decay: 0.02
+  WindCone: 15
   WaterMat: {fileID: 2100000, guid: df006ef155eb243448eea39199864e5e, type: 2}
 --- !u!23 &1091536629
 MeshRenderer:
